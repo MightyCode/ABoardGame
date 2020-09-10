@@ -24,7 +24,7 @@ public ArrayList<Case> getCases1() {
   for (int i = 0; i < 4; ++i) {
     for (int j = 0; j < 4; ++j) {
       cases.add(
-        new Case(MARGIN_X + (sizeX / 3 * j), MARGIN_Y + (sizeY / 3 * i))
+        new Case(MARGIN_X + (sizeX / 3 * j ), MARGIN_Y + (sizeY / 3 * i))
         );
     }
   }
@@ -53,31 +53,37 @@ public void assignPions(ArrayList<Case> cases, int numberOfPions) {
 }
 
 
-/*public ArrayList<Integer> casesPlayable(ArrayList<Case> cases, int[][] board, EStates currentPlayer) {
+public ArrayList<Integer> casesPlayable(ArrayList<Case> cases, int[][] board, int selectedCase, EStates currentPlayer) {
   ArrayList<Integer> casesPlayable = new ArrayList();
-  ArrayList<Integer> indexes;
-  int indexTemp;
+  int index, indexTemp;
 
   for (int i = 0; i < board.length; ++i) {
-    indexes = placeOf(cases, board[i], currentPlayer);
+    index = placeOf(board[i], selectedCase);
+    if (index == -1) continue;
+    indexTemp = index - 1; 
 
-    for (int j = 0; j < board.length; ++j) {
-      indexTemp = indexes.get(j) - 1;
-      while(indexTemp >= 0 && cases.get(board[i][indexTemp]).getState() != EStates.Empty){
-        --indexTemp;
-      }
-      
-      if (indexTemp >= 0){
-        if (currentPlayer != cases.get(board[i][indexTemp]).getState()){
-          if (casesPlayable.get( == -1){
-            casesPlayable.
-          }
+    while (indexTemp >= 0 && cases.get(board[i][indexTemp]).getState() == EStates.Empty) {
+      --indexTemp;
+    }
+
+    if (indexTemp >= 0) {
+      if (currentPlayer != cases.get(board[i][indexTemp]).getState()) {
+        if (casesPlayable.indexOf(board[i][indexTemp]) == -1) {
+          casesPlayable.add(board[i][indexTemp]);
         }
       }
-      
-      indexTemp = indexes.get(j) + 1;
-      while(){
-        ++indexTemp;
+    }
+
+    indexTemp = index + 1;
+    while (indexTemp < board[i].length && cases.get(board[i][indexTemp]).getState() == EStates.Empty) {
+      ++indexTemp;
+    }
+
+    if (indexTemp < board[i].length) {
+      if (currentPlayer != cases.get(board[i][indexTemp]).getState()) {
+        if (casesPlayable.indexOf(board[i][indexTemp]) == -1) {
+          casesPlayable.add(board[i][indexTemp]);
+        }
       }
     }
   }
@@ -86,14 +92,14 @@ public void assignPions(ArrayList<Case> cases, int numberOfPions) {
 }
 
 
-public ArrayList<Integer> placeOf(ArrayList<Case> cases, int[] line, EStates currentPlayer) {
-  ArrayList<Integer> indexes = new ArrayList();
+public int placeOf(int[] line, int selectedCase) {
 
   for (int i = 0; i < line.length; ++i) {
-    if (cases.get(line[i]).getState() == currentPlayer) {
-      indexes.add(i);
+    if (line[i] == selectedCase) {
+      println(i);
+      return i;
     }
   }
 
-  return indexes;
-}*/
+  return -1;
+}

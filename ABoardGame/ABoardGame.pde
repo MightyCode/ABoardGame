@@ -1,5 +1,6 @@
 int[][] board;
 ArrayList<Case> cases;
+ArrayList<Integer> casesPlayable;
 
 static int MARGIN_X = 150, MARGIN_Y = 150;
 static int NUMBER_OF_PIONS = 8;
@@ -40,6 +41,9 @@ void draw() {
     if (selectedPion == i) {
       stroke(255, 0, 0);
       strokeWeight(4);
+    } else if (selectedPion != -1 && casesPlayable.indexOf(i) != -1) {
+      stroke(51, 102, 204);
+      strokeWeight(3);
     } else {
       resetStroke();
     }
@@ -62,7 +66,19 @@ void draw() {
 }
 
 void mousePressed() {
-  selectedPion = -1;
+  if (selectedPion != -1) {
+    int i = 0;
+    while(i < casesPlayable.size()){
+      if (mouseHover(casesPlayable.get(i))){
+        currentPionGoTo(casesPlayable.get(i));
+        nextTurn();
+        return;
+      }
+      ++i;
+    }
+  }
+
+  unselectPion();
 
   int i = 0;
   while (i < cases.size() && selectedPion == -1) {
@@ -71,8 +87,9 @@ void mousePressed() {
       continue;
     }
 
-    if (sqrt(pow(mouseX - cases.get(i).getX(), 2) + pow(mouseY - cases.get(i).getY(), 2)) <= 25) {
-      selectedPion = i;
+    if (mouseHover(i)) {
+      selectPion(i);
+      break;
     }
 
     ++i;
@@ -82,4 +99,28 @@ void mousePressed() {
 void resetStroke() {
   stroke(0);
   strokeWeight(1);
+}
+
+boolean mouseHover(int pionIndex) {
+  return sqrt(pow(mouseX - cases.get(pionIndex).getX(), 2) + pow(mouseY - cases.get(pionIndex).getY(), 2)) <= 25;
+}
+
+void selectPion(int pionIndex) {
+  selectedPion = pionIndex;
+  casesPlayable = casesPlayable(cases, board, selectedPion, currentPlayer);
+}
+
+void unselectPion() {
+  selectedPion = -1;
+}
+
+void nextTurn() {
+  unselectPion();
+  if (currentPlayer == EStates.White) currentPlayer =  EStates.Black;
+  else currentPlayer =  EStates.White;
+}
+
+void currentPionGoTo(int pionTo){
+  cases.get(selectedPion).setState(EStates.Empty);
+  cases.get(pionTo).setState(currentPlayer);
 }
