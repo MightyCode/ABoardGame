@@ -3,9 +3,10 @@ ArrayList<Case> cases;
 ArrayList<Integer> casesPlayable;
 
 static int MARGIN_X = 150, MARGIN_Y = 150;
-static int NUMBER_OF_PIONS = 8;
+static int NUMBER_OF_PIONS = 10;
 
 int selectedPion = -1;
+int hoverPion = -1;
 EStates currentPlayer;
 
 void setup() {
@@ -38,9 +39,12 @@ void draw() {
 
   // pions
   for (int i = 0; i < cases.size(); ++i) {
-    if (selectedPion == i) {
+    if (selectedPion == i && isPlayerState(i)) {
       stroke(255, 0, 0);
       strokeWeight(4);
+    } else if (hoverPion == i  && isPlayerState(i)) {
+      stroke(220, 0, 0);
+      strokeWeight(2);
     } else if (selectedPion != -1 && casesPlayable.indexOf(i) != -1) {
       stroke(51, 102, 204);
       strokeWeight(3);
@@ -68,8 +72,8 @@ void draw() {
 void mousePressed() {
   if (selectedPion != -1) {
     int i = 0;
-    while(i < casesPlayable.size()){
-      if (mouseHover(casesPlayable.get(i))){
+    while (i < casesPlayable.size()) {
+      if (mouseHover(casesPlayable.get(i))) {
         currentPionGoTo(casesPlayable.get(i));
         nextTurn();
         return;
@@ -80,20 +84,29 @@ void mousePressed() {
 
   unselectPion();
 
+  if (mouseHover(hoverPion) ) {
+    selectPion(hoverPion);
+
+  }
+}
+
+void mouseMoved() {
+  hoverPion = -1;
+  
   int i = 0;
   while (i < cases.size() && selectedPion == -1) {
-    if (cases.get(i).getState() != currentPlayer) {
-      ++i;
-      continue;
-    }
-
-    if (mouseHover(i)) {
-      selectPion(i);
+    
+    if (mouseHover(i) && isPlayerState(i)) {
+      hoverPion = i;
       break;
     }
-
+    
     ++i;
   }
+}
+
+boolean isPlayerState(int pionIndex){
+  return cases.get(pionIndex).getState() == currentPlayer;
 }
 
 void resetStroke() {
@@ -102,6 +115,8 @@ void resetStroke() {
 }
 
 boolean mouseHover(int pionIndex) {
+  if (pionIndex < 0 || pionIndex >= cases.size()) return false;
+  
   return sqrt(pow(mouseX - cases.get(pionIndex).getX(), 2) + pow(mouseY - cases.get(pionIndex).getY(), 2)) <= 25;
 }
 
@@ -120,7 +135,7 @@ void nextTurn() {
   else currentPlayer =  EStates.White;
 }
 
-void currentPionGoTo(int pionTo){
+void currentPionGoTo(int pionTo) {
   cases.get(selectedPion).setState(EStates.Empty);
   cases.get(pionTo).setState(currentPlayer);
 }

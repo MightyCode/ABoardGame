@@ -2,13 +2,16 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
-public int[][] getBoardConfiguration1() {
-  int[][] board = new int[4 + 4][4];
+public static int SQUARE_SIZE = 8;
 
-  for (int i = 0; i < 4; ++i) {
-    for (int j = 0; j < 4; ++j) {
-      board[i][j] = i * 4 + j;
-      board[4 + i][j] = i + j * 4;
+public int[][] getBoardConfiguration1() {
+  
+  int[][] board = new int[SQUARE_SIZE * 2 ][SQUARE_SIZE];
+
+  for (int i = 0; i < SQUARE_SIZE; ++i) {
+    for (int j = 0; j < SQUARE_SIZE; ++j) {
+      board[i][j] = i * SQUARE_SIZE + j;
+      board[SQUARE_SIZE + i][j] = i + j * SQUARE_SIZE;
     }
   }
 
@@ -21,10 +24,10 @@ public ArrayList<Case> getCases1() {
   int sizeX = width - MARGIN_X * 2;
   int sizeY = height - MARGIN_Y * 2;
 
-  for (int i = 0; i < 4; ++i) {
-    for (int j = 0; j < 4; ++j) {
+  for (int i = 0; i < SQUARE_SIZE; ++i) {
+    for (int j = 0; j < SQUARE_SIZE; ++j) {
       cases.add(
-        new Case(MARGIN_X + (sizeX / 3 * j ), MARGIN_Y + (sizeY / 3 * i))
+        new Case(MARGIN_X + (sizeX / (SQUARE_SIZE - 1) * j ), MARGIN_Y + (sizeY / (SQUARE_SIZE - 1) * i))
         );
     }
   }
