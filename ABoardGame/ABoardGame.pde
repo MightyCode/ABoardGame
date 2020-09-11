@@ -3,7 +3,7 @@ ArrayList<Case> cases;
 ArrayList<Integer> casesPlayable;
 
 static int MARGIN_X = 150, MARGIN_Y = 150;
-static int NUMBER_OF_PIONS = 10;
+static int NUMBER_OF_PIONS = 6;
 
 int selectedPion = -1;
 int hoverPion = -1;
@@ -27,6 +27,15 @@ void draw() {
 
   fill(0);
   resetStroke();
+  
+    // hud
+  textSize(30);
+  textAlign(LEFT, CENTER);
+  text("Turn", width * 0.53, height * 0.95);
+  if (currentPlayer == EStates.White) fill(255);
+  else  fill(0);
+  ellipse(width * 0.48, height * 0.95, 50, 50);
+  
   // lines
   for (int i = 0; i < board.length; ++i) {
     for (int j = 0; j < board[i].length - 1; ++j) {
@@ -67,6 +76,7 @@ void draw() {
       break;
     }
   }
+
 }
 
 void mousePressed() {
@@ -122,7 +132,7 @@ boolean mouseHover(int pionIndex) {
 
 void selectPion(int pionIndex) {
   selectedPion = pionIndex;
-  casesPlayable = casesPlayable(cases, board, selectedPion, currentPlayer);
+  casesPlayable = casesPlayable(board, cases,  selectedPion, currentPlayer);
 }
 
 void unselectPion() {
@@ -131,7 +141,8 @@ void unselectPion() {
 
 void nextTurn() {
   unselectPion();
-  if (currentPlayer == EStates.White) currentPlayer =  EStates.Black;
+  println(boardValue(board, cases, currentPlayer));
+  if (currentPlayer == EStates.White) currentPlayer = EStates.Black;
   else currentPlayer =  EStates.White;
 }
 

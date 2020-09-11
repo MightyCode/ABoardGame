@@ -2,7 +2,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
-public static int SQUARE_SIZE = 8;
+public static int SQUARE_SIZE = 4;
 
 public int[][] getBoardConfiguration1() {
   
@@ -38,8 +38,8 @@ public ArrayList<Case> getCases1() {
 }
 
 public void assignPions(ArrayList<Case> cases, int numberOfPions) {
-  List<Integer> range = new ArrayList(16);
-  for (int i= 0; i<= 15; i++) {
+  List<Integer> range = new ArrayList(cases.size());
+  for (int i= 0; i< cases.size(); i++) {
     range.add(i);
   }
 
@@ -56,7 +56,7 @@ public void assignPions(ArrayList<Case> cases, int numberOfPions) {
 }
 
 
-public ArrayList<Integer> casesPlayable(ArrayList<Case> cases, int[][] board, int selectedCase, EStates currentPlayer) {
+public ArrayList<Integer> casesPlayable(int[][] board, ArrayList<Case> cases, int selectedCase, EStates currentPlayer) {
   ArrayList<Integer> casesPlayable = new ArrayList();
   int index, indexTemp;
 
@@ -99,7 +99,6 @@ public int placeOf(int[] line, int selectedCase) {
 
   for (int i = 0; i < line.length; ++i) {
     if (line[i] == selectedCase) {
-      println(i);
       return i;
     }
   }
