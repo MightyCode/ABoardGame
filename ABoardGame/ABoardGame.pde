@@ -1,13 +1,21 @@
-int[][] board;
+ArrayList<Integer>[] board;
 ArrayList<Case> cases;
 ArrayList<Integer> casesPlayable;
 
 static int MARGIN_X = 150, MARGIN_Y = 150;
-static int NUMBER_OF_PIONS = 6;
+static int NUMBER_OF_PIONS = 12;
+static int AI_CHOOSE_TIME = 1500; // in millis;
 
 int selectedPion = -1;
 int hoverPion = -1;
 EStates currentPlayer;
+
+// IA vairable
+boolean player2IsAi = true;
+AI ai = new AI(3, EStates.Black);
+int timeAiChoose;
+Pair<Integer, Integer> aiDecision;
+
 
 void setup() {
   board = getBoardConfiguration1();
@@ -16,33 +24,51 @@ void setup() {
 
   currentPlayer = EStates.White;
 
+  if (player2IsAi) ai.InitBoard(board, cases);
   size(800, 800);
 
   rectMode(CENTER);
   ellipseMode(CENTER);
+  textSize(30);
 }
 
 void draw() {
+  // Update 
+  if (aiTurn()) {
+    if (selectedPion == -1 && millis() - timeAiChoose >= AI_CHOOSE_TIME / 2) {
+      hoverPion = aiDecision.key;
+      selectedPion = aiDecision.key;
+      casesPlayable = new ArrayList<Integer>();
+      casesPlayable.add(aiDecision.value);
+    }
+    if (millis() - timeAiChoose >= AI_CHOOSE_TIME) {
+      currentPionGoTo(aiDecision.value);
+      ai.MakeDecision(aiDecision);
+      nextTurn();
+    }
+  }
+
+
+  // Draw
   background(255);
 
   fill(0);
   resetStroke();
-  
-    // hud
-  textSize(30);
+
+  // hud
   textAlign(LEFT, CENTER);
-  text("Turn", width * 0.53, height * 0.95);
+  text("Turn" + ((aiTurn())? " (AI)": ""), width * 0.53, height * 0.95);
   if (currentPlayer == EStates.White) fill(255);
   else  fill(0);
   ellipse(width * 0.48, height * 0.95, 50, 50);
-  
+
   // lines
   for (int i = 0; i < board.length; ++i) {
-    for (int j = 0; j < board[i].length - 1; ++j) {
-      line(cases.get(board[i][j]).getX(), 
-        cases.get(board[i][j]).getY(), 
-        cases.get(board[i][j + 1]).getX(), 
-        cases.get(board[i][j + 1]).getY());
+    for (int j = 0; j < board[i].size() - 1; ++j) {
+      line(cases.get(board[i].get(j)).getX(), 
+        cases.get(board[i].get(j)).getY(), 
+        cases.get(board[i].get(j + 1)).getX(), 
+        cases.get(board[i].get(j + 1)).getY());
     }
   }
 
@@ -76,15 +102,17 @@ void draw() {
       break;
     }
   }
-
 }
 
 void mousePressed() {
+  if (aiTurn()) return;
+
   if (selectedPion != -1) {
     int i = 0;
     while (i < casesPlayable.size()) {
       if (mouseHover(casesPlayable.get(i))) {
         currentPionGoTo(casesPlayable.get(i));
+        if (player2IsAi) ai.MakeDecision(new Pair<Integer, Integer>(selectedPion, casesPlayable.get(i)));
         nextTurn();
         return;
       }
@@ -92,30 +120,34 @@ void mousePressed() {
     }
   }
 
-  unselectPion();
+  selectedPion = -1;
 
   if (mouseHover(hoverPion) ) {
     selectPion(hoverPion);
-
   }
 }
 
 void mouseMoved() {
+
+  if (aiTurn()) return;
   hoverPion = -1;
-  
   int i = 0;
   while (i < cases.size() && selectedPion == -1) {
-    
+
     if (mouseHover(i) && isPlayerState(i)) {
       hoverPion = i;
       break;
     }
-    
+
     ++i;
   }
 }
 
-boolean isPlayerState(int pionIndex){
+boolean aiTurn() {
+  return player2IsAi && currentPlayer == EStates.Black;
+}
+
+boolean isPlayerState(int pionIndex) {
   return cases.get(pionIndex).getState() == currentPlayer;
 }
 
@@ -126,24 +158,29 @@ void resetStroke() {
 
 boolean mouseHover(int pionIndex) {
   if (pionIndex < 0 || pionIndex >= cases.size()) return false;
-  
+
   return sqrt(pow(mouseX - cases.get(pionIndex).getX(), 2) + pow(mouseY - cases.get(pionIndex).getY(), 2)) <= 25;
 }
 
 void selectPion(int pionIndex) {
   selectedPion = pionIndex;
-  casesPlayable = casesPlayable(board, cases,  selectedPion, currentPlayer);
-}
-
-void unselectPion() {
-  selectedPion = -1;
+  casesPlayable = casesPlayable(board, cases, selectedPion, currentPlayer);
 }
 
 void nextTurn() {
-  unselectPion();
-  println(boardValue(board, cases, currentPlayer));
-  if (currentPlayer == EStates.White) currentPlayer = EStates.Black;
-  else currentPlayer =  EStates.White;
+  selectedPion = -1;
+  hoverPion = -1;
+
+  if (currentPlayer == EStates.White) {
+    currentPlayer = EStates.Black;
+
+    if (player2IsAi) {
+      aiDecision = ai.decision();
+      timeAiChoose = millis();
+    }
+  } else {
+    currentPlayer =  EStates.White;
+  }
 }
 
 void currentPionGoTo(int pionTo) {

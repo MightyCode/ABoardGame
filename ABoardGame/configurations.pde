@@ -4,14 +4,16 @@ import java.util.stream.Collectors;
 
 public static int SQUARE_SIZE = 4;
 
-public int[][] getBoardConfiguration1() {
+public ArrayList<Integer>[] getBoardConfiguration1() {
   
-  int[][] board = new int[SQUARE_SIZE * 2 ][SQUARE_SIZE];
+  ArrayList<Integer>[] board = new ArrayList[SQUARE_SIZE * 2 ];
 
   for (int i = 0; i < SQUARE_SIZE; ++i) {
+    board[i] = new ArrayList();
+    board[SQUARE_SIZE + i] = new ArrayList();
     for (int j = 0; j < SQUARE_SIZE; ++j) {
-      board[i][j] = i * SQUARE_SIZE + j;
-      board[SQUARE_SIZE + i][j] = i + j * SQUARE_SIZE;
+      board[i].add(i * SQUARE_SIZE + j);
+      board[SQUARE_SIZE + i].add(i + j * SQUARE_SIZE);
     }
   }
 
@@ -56,7 +58,7 @@ public void assignPions(ArrayList<Case> cases, int numberOfPions) {
 }
 
 
-public ArrayList<Integer> casesPlayable(int[][] board, ArrayList<Case> cases, int selectedCase, EStates currentPlayer) {
+public ArrayList<Integer> casesPlayable(ArrayList<Integer>[] board, ArrayList<Case> cases, int selectedCase, EStates currentPlayer) {
   ArrayList<Integer> casesPlayable = new ArrayList();
   int index, indexTemp;
 
@@ -65,27 +67,27 @@ public ArrayList<Integer> casesPlayable(int[][] board, ArrayList<Case> cases, in
     if (index == -1) continue;
     indexTemp = index - 1; 
 
-    while (indexTemp >= 0 && cases.get(board[i][indexTemp]).getState() == EStates.Empty) {
+    while (indexTemp >= 0 && cases.get(board[i].get(indexTemp)).getState() == EStates.Empty) {
       --indexTemp;
     }
 
     if (indexTemp >= 0) {
-      if (currentPlayer != cases.get(board[i][indexTemp]).getState()) {
-        if (casesPlayable.indexOf(board[i][indexTemp]) == -1) {
-          casesPlayable.add(board[i][indexTemp]);
+      if (currentPlayer != cases.get(board[i].get(indexTemp)).getState()) {
+        if (casesPlayable.indexOf(board[i].get(indexTemp)) == -1) {
+          casesPlayable.add(board[i].get(indexTemp));
         }
       }
     }
 
     indexTemp = index + 1;
-    while (indexTemp < board[i].length && cases.get(board[i][indexTemp]).getState() == EStates.Empty) {
+    while (indexTemp < board[i].size() && cases.get(board[i].get(indexTemp)).getState() == EStates.Empty) {
       ++indexTemp;
     }
 
-    if (indexTemp < board[i].length) {
-      if (currentPlayer != cases.get(board[i][indexTemp]).getState()) {
-        if (casesPlayable.indexOf(board[i][indexTemp]) == -1) {
-          casesPlayable.add(board[i][indexTemp]);
+    if (indexTemp < board[i].size()) {
+      if (currentPlayer != cases.get(board[i].get(indexTemp)).getState()) {
+        if (casesPlayable.indexOf(board[i].get(indexTemp)) == -1) {
+          casesPlayable.add(board[i].get(indexTemp));
         }
       }
     }
@@ -95,10 +97,10 @@ public ArrayList<Integer> casesPlayable(int[][] board, ArrayList<Case> cases, in
 }
 
 
-public int placeOf(int[] line, int selectedCase) {
+public int placeOf(ArrayList<Integer> line, int selectedCase) {
 
-  for (int i = 0; i < line.length; ++i) {
-    if (line[i] == selectedCase) {
+  for (int i = 0; i < line.size(); ++i) {
+    if (line.get(i) == selectedCase) {
       return i;
     }
   }
