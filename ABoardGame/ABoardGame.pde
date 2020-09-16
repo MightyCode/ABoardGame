@@ -8,7 +8,6 @@ void setup() {
 
   rectMode(CENTER);
   ellipseMode(CENTER);
-  textSize(30);
 
   sm = new SceneManager();
   sm.init();

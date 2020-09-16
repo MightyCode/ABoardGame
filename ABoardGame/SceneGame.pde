@@ -1,4 +1,4 @@
-static int MARGIN_LEFT = 100, MARGIN_RIGHT = 100, MARGIN_DOWN = 100, MARGIN_UP = 30;
+static int MARGIN_LEFT = 100, MARGIN_RIGHT = 100, MARGIN_DOWN = 100, MARGIN_UP = 130;
 static int POURCENT_PIONS = 60;
 static int AI_CHOOSE_TIME = 1500; // in millis;
 static int PION_SIZE= 40;
@@ -20,9 +20,13 @@ public class SceneGame extends Scene {
   private int timeAiChoose;
   private Pair<Integer, Integer> aiDecision;
 
+  private boolean homeButtonHover;
+
   public SceneGame(SceneManager sm) {
     super(sm);
-    
+
+    homeButtonHover = false;
+
     int floor = 5;
     board = getBoardConfiguration2(floor);
     cases = getCases2(floor);
@@ -31,8 +35,6 @@ public class SceneGame extends Scene {
     currentPlayer = EStates.White;
 
     if (player2IsAi) ai.InitBoard(board, cases);
-    
-    textAlign(LEFT, CENTER);
   }
 
   public void update() {
@@ -58,17 +60,8 @@ public class SceneGame extends Scene {
 
     resetStroke();
 
-    // hud
-
-    fill(fontColor());
-    text("Turn" + ((aiTurn())? " (AI)": ""), width * 0.53, height * 0.95);
-    
-    if (currentPlayer == EStates.White) fill(whitePionColor());
-    else  fill(blackPionColor());
-    ellipse(width * 0.48, height * 0.95, PION_SIZE, PION_SIZE);
-
     // lines
-    
+
     for (int i = 0; i < board.length; ++i) {
       for (int j = 0; j < board[i].size() - 1; ++j) {        
         line(cases.get(board[i].get(j)).getX(), 
@@ -108,9 +101,37 @@ public class SceneGame extends Scene {
         break;
       }
     }
+
+    // hud
+    
+    textAlign(LEFT, CENTER);
+    textSize(30);
+    fill(fontColor());
+    text("Turn" + ((aiTurn())? " (AI)": ""), width * 0.53, height * 0.95);
+
+    if (currentPlayer == EStates.White) fill(whitePionColor());
+    else                                fill(blackPionColor());
+    ellipse(width * 0.48, height * 0.95, PION_SIZE, PION_SIZE);
+    
+    stroke(strokeColor());
+    fill(buttonHoverColor());
+
+    if (homeButtonHover) {
+      rect(width * 0.15f, height * 0.07f, width * 0.2f, height * 0.06f);
+    }
+    
+    textSize(15);
+    
+    textAlign(CENTER, CENTER);
+    fill(fontColor());
+    text("Return to menu", width * 0.15f, height * 0.07f);
   }
 
   public void mousePressed() {
+    if (homeButtonHover){
+      sm.changeScene(new SceneMainMenu(sm));
+    }
+    
     if (aiTurn()) return;
 
     if (selectedPion != -1) {
@@ -134,6 +155,8 @@ public class SceneGame extends Scene {
   }
 
   public void mouseMoved() {
+    homeButtonHover = mouseOnEmp(0.15f, 0.07f, 0.2f, 0.06f);
+    
     if (aiTurn()) return;
     hoverPion = -1;
     int i = 0;
@@ -173,7 +196,7 @@ public class SceneGame extends Scene {
     casesPlayable = casesPlayable(board, cases, selectedPion, currentPlayer);
   }
 
- private void nextTurn() {
+  private void nextTurn() {
     selectedPion = -1;
     hoverPion = -1;
 

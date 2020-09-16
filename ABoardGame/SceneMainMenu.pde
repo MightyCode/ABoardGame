@@ -5,7 +5,7 @@ public class SceneMainMenu extends Scene {
   public SceneMainMenu(SceneManager sm) {
     super(sm);
 
-    playButtonHover = true;
+    playButtonHover = false;
     settingsButtonHover = false;
     quitButtonHover = false;
 
