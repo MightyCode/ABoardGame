@@ -1,4 +1,4 @@
-static int MARGIN_X = 100, MARGIN_Y = 100;
+static int MARGIN_LEFT = 100, MARGIN_RIGHT = 100, MARGIN_DOWN = 100, MARGIN_UP = 30;
 static int NUMBER_OF_PIONS = 30;
 static int AI_CHOOSE_TIME = 1500; // in millis;
 static int PION_SIZE= 40;

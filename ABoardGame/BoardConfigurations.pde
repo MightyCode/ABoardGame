@@ -1,6 +1,17 @@
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
+
+public int sizeX() {
+ return width - (MARGIN_RIGHT + MARGIN_LEFT);
+}
+
+public int sizeY(){
+ return height - (MARGIN_UP + MARGIN_DOWN);
+}
+
+
+
 public ArrayList<Integer>[] getBoardConfiguration1(int squareSize) {
 
   ArrayList<Integer>[] board = new ArrayList[squareSize * 2 ];
@@ -20,13 +31,13 @@ public ArrayList<Integer>[] getBoardConfiguration1(int squareSize) {
 public ArrayList<Case> getCases1(int squareSize) {
   ArrayList<Case> cases = new ArrayList(squareSize * squareSize);
 
-  int sizeX = width - MARGIN_X * 2;
-  int sizeY = height - MARGIN_Y * 2;
+  int sizeX = sizeX();
+  int sizeY = sizeY();
 
   for (int i = 0; i < squareSize; ++i) {
     for (int j = 0; j < squareSize; ++j) {
       cases.add(
-        new Case(MARGIN_X + (sizeX / (squareSize - 1) * j ), MARGIN_Y + (sizeY / (squareSize - 1) * i))
+        new Case(MARGIN_RIGHT + (sizeX / (squareSize - 1) * j ), MARGIN_UP + (sizeY / (squareSize - 1) * i))
         );
     }
   }
@@ -66,20 +77,20 @@ public ArrayList<Integer>[] getBoardConfiguration2(int squareSize) {
 public ArrayList<Case> getCases2(int squareSize) {
   ArrayList<Case> cases = new ArrayList(8 * squareSize);
 
-  int sizeX = width - MARGIN_X * 2;
-  int sizeY = height - MARGIN_Y * 2;
-  
+
+  int sizeX = sizeX();
+  int sizeY = sizeY();
   int sq2 = squareSize * 2;
 
   for (int i = 0; i < squareSize; ++i) {
-    cases.add(new Case(MARGIN_X + (sizeX/sq2 * i), MARGIN_Y + (sizeY/sq2 * i)));
-    cases.add(new Case(MARGIN_X + (sizeX/2), MARGIN_Y + (sizeY/sq2 * i)));
-    cases.add(new Case(MARGIN_X + (sizeX - sizeX/sq2 * i), MARGIN_Y + (sizeY/sq2 * i)));
-    cases.add(new Case(MARGIN_X + (sizeX - sizeX/sq2 * i), MARGIN_Y + (sizeY/2)));
-    cases.add(new Case(MARGIN_X + (sizeX - sizeX/sq2 * i), MARGIN_Y + (sizeY - sizeY/sq2 * i)));
-    cases.add(new Case(MARGIN_X + (sizeX/2), MARGIN_Y + sizeY - sizeY/sq2 * i));
-    cases.add(new Case(MARGIN_X + (sizeX/sq2 * i), MARGIN_Y + sizeY - sizeY/sq2 * i));
-    cases.add(new Case(MARGIN_X + (sizeX/sq2 * i), MARGIN_Y + (sizeY/2)));
+    cases.add(new Case(MARGIN_RIGHT + (sizeX/sq2 * i), MARGIN_UP + (sizeY/sq2 * i)));
+    cases.add(new Case(MARGIN_RIGHT + (sizeX/2), MARGIN_UP + (sizeY/sq2 * i)));
+    cases.add(new Case(MARGIN_RIGHT + (sizeX - sizeX/sq2 * i), MARGIN_UP + (sizeY/sq2 * i)));
+    cases.add(new Case(MARGIN_RIGHT + (sizeX - sizeX/sq2 * i), MARGIN_UP + (sizeY/2)));
+    cases.add(new Case(MARGIN_RIGHT + (sizeX - sizeX/sq2 * i), MARGIN_UP + (sizeY - sizeY/sq2 * i)));
+    cases.add(new Case(MARGIN_RIGHT + (sizeX/2), MARGIN_UP + sizeY - sizeY/sq2 * i));
+    cases.add(new Case(MARGIN_RIGHT + (sizeX/sq2 * i), MARGIN_UP + sizeY - sizeY/sq2 * i));
+    cases.add(new Case(MARGIN_RIGHT + (sizeX/sq2 * i), MARGIN_UP + (sizeY/2)));
   }
 
   return cases;
