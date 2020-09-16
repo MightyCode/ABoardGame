@@ -53,7 +53,6 @@ public ArrayList<Integer>[] getBoardConfiguration2(int squareSize) {
       board[i * 4 + j] = new ArrayList();
       for (int x = 0; x < 3; ++x) {
         board[i * 4 + j].add(i * 8 + ((j * 2 + x) - ((j == 3 && x == 2)? (j * 2 + x) : 0)));
-        println(i * 8 + ((j * 2 + x) - ((j == 3 && x == 2)? (j * 2 + x) : 0)));
       }
     }
   }

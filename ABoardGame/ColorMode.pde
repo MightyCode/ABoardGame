@@ -1,4 +1,4 @@
-public boolean DarkMode = false;
+public boolean DarkMode = true;
 
 public color blackPionColor(){
  return (DarkMode) ? color(5): color(0);
@@ -35,4 +35,8 @@ public color strokeColor(){
 
 public color fontColor(){
    return (DarkMode) ? color(200): color(0);
+}
+
+public color buttonHoverColor(){
+  return (DarkMode) ? color(110): color(211);
 }

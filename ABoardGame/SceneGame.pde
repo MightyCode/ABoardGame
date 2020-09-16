@@ -6,19 +6,19 @@ static int NO_PION_SIZE = 5;
 
 public class SceneGame extends Scene {
 
-  ArrayList<Integer>[] board;
-  ArrayList<Case> cases;
-  ArrayList<Integer> casesPlayable;
+  private ArrayList<Integer>[] board;
+  private ArrayList<Case> cases;
+  private ArrayList<Integer> casesPlayable;
 
-  int selectedPion = -1;
-  int hoverPion = -1;
-  EStates currentPlayer;
+  private int selectedPion = -1;
+  private int hoverPion = -1;
+  private EStates currentPlayer;
 
   // IA vairable
-  boolean player2IsAi = true;
-  AI ai = new AI(3, EStates.Black);
-  int timeAiChoose;
-  Pair<Integer, Integer> aiDecision;
+  private boolean player2IsAi = true;
+  private AI ai = new AI(3, EStates.Black);
+  private int timeAiChoose;
+  private Pair<Integer, Integer> aiDecision;
 
   public SceneGame(SceneManager sm) {
     super(sm);

@@ -1,12 +1,12 @@
 public class SceneManager {
-  Scene currentScene, nextScene = null;
+  private Scene currentScene, nextScene = null;
 
 
   public SceneManager() {
   }
 
   public void init() {
-    currentScene = new SceneGame(this);
+    currentScene = new SceneMainMenu(this);
   }
 
   public void update() {
