@@ -11,7 +11,6 @@ public int sizeY(){
 }
 
 
-
 public ArrayList<Integer>[] getBoardConfiguration1(int squareSize) {
 
   ArrayList<Integer>[] board = new ArrayList[squareSize * 2 ];
@@ -97,7 +96,9 @@ public ArrayList<Case> getCases2(int squareSize) {
 }
 
 
-public void assignPions(ArrayList<Case> cases, int numberOfPions) {
+public void assignPions(ArrayList<Case> cases, int pourcent) {
+    final int numberToAttribute = cases.size() * pourcent / 100;
+  
   List<Integer> range = new ArrayList(cases.size());
   for (int i= 0; i< cases.size(); i++) {
     range.add(i);
@@ -106,10 +107,10 @@ public void assignPions(ArrayList<Case> cases, int numberOfPions) {
   int attributed = 0;
   int index = 0;
 
-  while (attributed < numberOfPions) {
+  while (attributed < numberToAttribute) {
     index = (int)random(range.size());
 
-    cases.get(range.get(index)).setState((attributed >= numberOfPions / 2)? EStates.White : EStates.Black);
+    cases.get(range.get(index)).setState((attributed >= numberToAttribute / 2)? EStates.White : EStates.Black);
     ++attributed;  
     range.remove(index);
   }

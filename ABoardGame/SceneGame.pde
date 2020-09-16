@@ -1,5 +1,5 @@
 static int MARGIN_LEFT = 100, MARGIN_RIGHT = 100, MARGIN_DOWN = 100, MARGIN_UP = 30;
-static int NUMBER_OF_PIONS = 30;
+static int POURCENT_PIONS = 60;
 static int AI_CHOOSE_TIME = 1500; // in millis;
 static int PION_SIZE= 40;
 static int NO_PION_SIZE = 5; 
@@ -26,11 +26,13 @@ public class SceneGame extends Scene {
     int floor = 5;
     board = getBoardConfiguration2(floor);
     cases = getCases2(floor);
-    assignPions(cases, NUMBER_OF_PIONS);
+    assignPions(cases, POURCENT_PIONS);
 
     currentPlayer = EStates.White;
 
     if (player2IsAi) ai.InitBoard(board, cases);
+    
+    textAlign(LEFT, CENTER);
   }
 
   public void update() {
@@ -51,20 +53,18 @@ public class SceneGame extends Scene {
   }
 
   public void draw() {
-
-
-
     // Draw
-    background(255);
+    background(backgroundColor());
 
-    fill(0);
     resetStroke();
 
     // hud
-    textAlign(LEFT, CENTER);
+
+    fill(fontColor());
     text("Turn" + ((aiTurn())? " (AI)": ""), width * 0.53, height * 0.95);
-    if (currentPlayer == EStates.White) fill(255);
-    else  fill(0);
+    
+    if (currentPlayer == EStates.White) fill(whitePionColor());
+    else  fill(blackPionColor());
     ellipse(width * 0.48, height * 0.95, PION_SIZE, PION_SIZE);
 
     // lines
@@ -81,13 +81,13 @@ public class SceneGame extends Scene {
     // pions
     for (int i = 0; i < cases.size(); ++i) {
       if (selectedPion == i && isPlayerState(i)) {
-        stroke(255, 0, 0);
+        stroke(pionSelectedStrokeColor());
         strokeWeight(4);
       } else if (hoverPion == i  && isPlayerState(i)) {
-        stroke(220, 0, 0);
+        stroke(pionHoverStrokeColor());
         strokeWeight(2);
       } else if (selectedPion != -1 && casesPlayable.indexOf(i) != -1) {
-        stroke(51, 102, 204);
+        stroke(pionPlayableStrokeColor());
         strokeWeight(3);
       } else {
         resetStroke();
@@ -95,15 +95,15 @@ public class SceneGame extends Scene {
 
       switch(cases.get(i).getState()) {
       case White :
-        fill(255);
+        fill(whitePionColor());
         ellipse(cases.get(i).getX(), cases.get(i).getY(), PION_SIZE, PION_SIZE);
         break;
       case Black :
-        fill(0);
+        fill(blackPionColor());
         ellipse(cases.get(i).getX(), cases.get(i).getY(), PION_SIZE, PION_SIZE);
         break;
       case Empty :
-        fill(255);
+        fill(emptyPionColor());
         ellipse(cases.get(i).getX(), cases.get(i).getY(), NO_PION_SIZE, NO_PION_SIZE);
         break;
       }
@@ -157,7 +157,7 @@ public class SceneGame extends Scene {
   }
 
   void resetStroke() {
-    stroke(0);
+    stroke(strokeColor());
     strokeWeight(1);
   }
 
