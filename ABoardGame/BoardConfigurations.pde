@@ -66,8 +66,6 @@ public ArrayList<Integer>[] getBoardConfiguration2(int squareSize) {
       }
     }
   }
-  
-  printBoard(board);
 
   return board;
 }

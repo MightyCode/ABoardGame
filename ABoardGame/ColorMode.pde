@@ -1,4 +1,4 @@
-public boolean DarkMode = true;
+public boolean DarkMode = false;
 
 public color blackPionColor(){
  return (DarkMode) ? color(5): color(0);
@@ -26,7 +26,7 @@ public color pionPlayableStrokeColor(){
 
 
 public color backgroundColor(){
- return (DarkMode) ? color(10): color(255);
+ return (DarkMode) ? color(10): color(230);
 }
 
 public color strokeColor(){
