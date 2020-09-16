@@ -1,43 +1,90 @@
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
+public ArrayList<Integer>[] getBoardConfiguration1(int squareSize) {
 
-public static int SQUARE_SIZE = 4;
+  ArrayList<Integer>[] board = new ArrayList[squareSize * 2 ];
 
-public ArrayList<Integer>[] getBoardConfiguration1() {
-  
-  ArrayList<Integer>[] board = new ArrayList[SQUARE_SIZE * 2 ];
-
-  for (int i = 0; i < SQUARE_SIZE; ++i) {
+  for (int i = 0; i < squareSize; ++i) {
     board[i] = new ArrayList();
-    board[SQUARE_SIZE + i] = new ArrayList();
-    for (int j = 0; j < SQUARE_SIZE; ++j) {
-      board[i].add(i * SQUARE_SIZE + j);
-      board[SQUARE_SIZE + i].add(i + j * SQUARE_SIZE);
+    board[squareSize + i] = new ArrayList();
+    for (int j = 0; j < squareSize; ++j) {
+      board[i].add(i * squareSize + j);
+      board[squareSize + i].add(i + j * squareSize);
     }
   }
 
   return board;
 }
 
-public ArrayList<Case> getCases1() {
-  ArrayList<Case> cases = new ArrayList();
+public ArrayList<Case> getCases1(int squareSize) {
+  ArrayList<Case> cases = new ArrayList(squareSize * squareSize);
 
   int sizeX = width - MARGIN_X * 2;
   int sizeY = height - MARGIN_Y * 2;
 
-  for (int i = 0; i < SQUARE_SIZE; ++i) {
-    for (int j = 0; j < SQUARE_SIZE; ++j) {
+  for (int i = 0; i < squareSize; ++i) {
+    for (int j = 0; j < squareSize; ++j) {
       cases.add(
-        new Case(MARGIN_X + (sizeX / (SQUARE_SIZE - 1) * j ), MARGIN_Y + (sizeY / (SQUARE_SIZE - 1) * i))
+        new Case(MARGIN_X + (sizeX / (squareSize - 1) * j ), MARGIN_Y + (sizeY / (squareSize - 1) * i))
         );
     }
   }
 
+  return cases;
+}
 
+public ArrayList<Integer>[] getBoardConfiguration2(int squareSize) {
+
+  ArrayList<Integer>[] board = new ArrayList[squareSize * 4 + ((squareSize >=2)? 4 : 0)];
+
+  for (int i = 0; i < squareSize; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      board[i * 4 + j] = new ArrayList();
+      for (int x = 0; x < 3; ++x) {
+        board[i * 4 + j].add(i * 8 + ((j * 2 + x) - ((j == 3 && x == 2)? (j * 2 + x) : 0)));
+        println(i * 8 + ((j * 2 + x) - ((j == 3 && x == 2)? (j * 2 + x) : 0)));
+      }
+    }
+  }
+
+  if (squareSize >= 2) {
+    for (int j = 0; j < 4; ++j) {
+      board[board.length - 4 + j] = new ArrayList();
+      for (int floor = 0; floor < squareSize; ++floor) {
+        board[board.length - 4 + j].add(1 + 8 * floor + 2 * j);
+      }
+    }
+  }
+  
+  printBoard(board);
+
+  return board;
+}
+
+
+public ArrayList<Case> getCases2(int squareSize) {
+  ArrayList<Case> cases = new ArrayList(8 * squareSize);
+
+  int sizeX = width - MARGIN_X * 2;
+  int sizeY = height - MARGIN_Y * 2;
+  
+  int sq2 = squareSize * 2;
+
+  for (int i = 0; i < squareSize; ++i) {
+    cases.add(new Case(MARGIN_X + (sizeX/sq2 * i), MARGIN_Y + (sizeY/sq2 * i)));
+    cases.add(new Case(MARGIN_X + (sizeX/2), MARGIN_Y + (sizeY/sq2 * i)));
+    cases.add(new Case(MARGIN_X + (sizeX - sizeX/sq2 * i), MARGIN_Y + (sizeY/sq2 * i)));
+    cases.add(new Case(MARGIN_X + (sizeX - sizeX/sq2 * i), MARGIN_Y + (sizeY/2)));
+    cases.add(new Case(MARGIN_X + (sizeX - sizeX/sq2 * i), MARGIN_Y + (sizeY - sizeY/sq2 * i)));
+    cases.add(new Case(MARGIN_X + (sizeX/2), MARGIN_Y + sizeY - sizeY/sq2 * i));
+    cases.add(new Case(MARGIN_X + (sizeX/sq2 * i), MARGIN_Y + sizeY - sizeY/sq2 * i));
+    cases.add(new Case(MARGIN_X + (sizeX/sq2 * i), MARGIN_Y + (sizeY/2)));
+  }
 
   return cases;
 }
+
 
 public void assignPions(ArrayList<Case> cases, int numberOfPions) {
   List<Integer> range = new ArrayList(cases.size());
@@ -106,4 +153,14 @@ public int placeOf(ArrayList<Integer> line, int selectedCase) {
   }
 
   return -1;
+}
+
+
+public void printBoard(ArrayList<Integer>[] board){
+ for (int i = 0; i < board.length; ++i) {
+    for (int j = 0; j < board[i].size(); ++j) {
+      print(board[i].get(j) + " ");
+    }
+     println("");
+  }
 }

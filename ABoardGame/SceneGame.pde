@@ -1,7 +1,8 @@
-static int MARGIN_X = 150, MARGIN_Y = 150;
-static int NUMBER_OF_PIONS = 12;
+static int MARGIN_X = 100, MARGIN_Y = 100;
+static int NUMBER_OF_PIONS = 30;
 static int AI_CHOOSE_TIME = 1500; // in millis;
-
+static int PION_SIZE= 40;
+static int NO_PION_SIZE = 5; 
 
 public class SceneGame extends Scene {
 
@@ -21,9 +22,10 @@ public class SceneGame extends Scene {
 
   public SceneGame(SceneManager sm) {
     super(sm);
-
-    board = getBoardConfiguration1();
-    cases = getCases1();
+    
+    int floor = 5;
+    board = getBoardConfiguration2(floor);
+    cases = getCases2(floor);
     assignPions(cases, NUMBER_OF_PIONS);
 
     currentPlayer = EStates.White;
@@ -63,11 +65,12 @@ public class SceneGame extends Scene {
     text("Turn" + ((aiTurn())? " (AI)": ""), width * 0.53, height * 0.95);
     if (currentPlayer == EStates.White) fill(255);
     else  fill(0);
-    ellipse(width * 0.48, height * 0.95, 50, 50);
+    ellipse(width * 0.48, height * 0.95, PION_SIZE, PION_SIZE);
 
     // lines
+    
     for (int i = 0; i < board.length; ++i) {
-      for (int j = 0; j < board[i].size() - 1; ++j) {
+      for (int j = 0; j < board[i].size() - 1; ++j) {        
         line(cases.get(board[i].get(j)).getX(), 
           cases.get(board[i].get(j)).getY(), 
           cases.get(board[i].get(j + 1)).getX(), 
@@ -93,15 +96,15 @@ public class SceneGame extends Scene {
       switch(cases.get(i).getState()) {
       case White :
         fill(255);
-        ellipse(cases.get(i).getX(), cases.get(i).getY(), 50, 50);
+        ellipse(cases.get(i).getX(), cases.get(i).getY(), PION_SIZE, PION_SIZE);
         break;
       case Black :
         fill(0);
-        ellipse(cases.get(i).getX(), cases.get(i).getY(), 50, 50);
+        ellipse(cases.get(i).getX(), cases.get(i).getY(), PION_SIZE, PION_SIZE);
         break;
       case Empty :
         fill(255);
-        ellipse(cases.get(i).getX(), cases.get(i).getY(), 5, 5);
+        ellipse(cases.get(i).getX(), cases.get(i).getY(), NO_PION_SIZE, NO_PION_SIZE);
         break;
       }
     }
@@ -161,7 +164,7 @@ public class SceneGame extends Scene {
   private boolean mouseHover(int pionIndex) {
     if (pionIndex < 0 || pionIndex >= cases.size()) return false;
 
-    return sqrt(pow(mouseX - cases.get(pionIndex).getX(), 2) + pow(mouseY - cases.get(pionIndex).getY(), 2)) <= 25;
+    return sqrt(pow(mouseX - cases.get(pionIndex).getX(), 2) + pow(mouseY - cases.get(pionIndex).getY(), 2)) <= PION_SIZE / 2;
   }
 
 
