@@ -31,9 +31,9 @@ public class AI {
     ArrayList<Integer> ourCases, casesPlayable;
     int bestCost = 0, cost;
 
-    ourCases = listCase(player);
+    ourCases = listCasesOf(cases, player);
     for (int i = 0; i < ourCases.size(); ++i) {
-      casesPlayable = casesPlayable(workBoard, cases, ourCases.get(i), player);
+      casesPlayable = casesPlayable(workBoard, cases, ourCases.get(i));
       
       for (int j = 0; j < casesPlayable.size(); ++j) {
         current = new Pair(ourCases.get(i), casesPlayable.get(j));
@@ -52,15 +52,6 @@ public class AI {
 
     if (best.key == null) return null;
     else return best;
-  }
-
-  private ArrayList<Integer> listCase(EStates player) {
-    ArrayList<Integer> toReturn = new ArrayList();
-    for (int i = 0; i < cases.size(); ++i) {
-      if (cases.get(i).getState() == player) toReturn.add(i);
-    }
-
-    return toReturn;
   }
 
   private int boardValue(ArrayList<Integer>[] board, ArrayList<Case> cases, EStates currentPlayer) {

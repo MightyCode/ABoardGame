@@ -21,19 +21,24 @@ public class SceneGame extends Scene {
   private Pair<Integer, Integer> aiDecision;
 
   private boolean homeButtonHover;
-
+  
+  private PGraphics renderTarget;
+  
   public SceneGame(SceneManager sm) {
     super(sm);
 
     homeButtonHover = false;
 
-    int floor = 5;
+    int floor = 2;
     board = getBoardConfiguration2(floor);
     cases = getCases2(floor);
     assignPions(cases, POURCENT_PIONS);
 
     currentPlayer = EStates.White;
-
+    
+    renderTarget = createGraphics(width, height);
+    renderTarget.rectMode(CENTER);
+    
     if (player2IsAi) ai.InitBoard(board, cases);
   }
 
@@ -56,7 +61,8 @@ public class SceneGame extends Scene {
 
   public void draw() {
     // Draw
-    background(backgroundColor());
+    renderTarget.beginDraw();
+    renderTarget.background(backgroundColor());
 
     resetStroke();
 
@@ -64,7 +70,7 @@ public class SceneGame extends Scene {
 
     for (int i = 0; i < board.length; ++i) {
       for (int j = 0; j < board[i].size() - 1; ++j) {        
-        line(cases.get(board[i].get(j)).getX(), 
+        renderTarget.line(cases.get(board[i].get(j)).getX(), 
           cases.get(board[i].get(j)).getY(), 
           cases.get(board[i].get(j + 1)).getX(), 
           cases.get(board[i].get(j + 1)).getY());
@@ -74,64 +80,67 @@ public class SceneGame extends Scene {
     // pions
     for (int i = 0; i < cases.size(); ++i) {
       if (selectedPion == i && isPlayerState(i)) {
-        stroke(pionSelectedStrokeColor());
-        strokeWeight(4);
+        renderTarget.stroke(pionSelectedStrokeColor());
+        renderTarget.strokeWeight(4);
       } else if (hoverPion == i  && isPlayerState(i)) {
-        stroke(pionHoverStrokeColor());
-        strokeWeight(2);
+        renderTarget.stroke(pionHoverStrokeColor());
+        renderTarget.strokeWeight(2);
       } else if (selectedPion != -1 && casesPlayable.indexOf(i) != -1) {
-        stroke(pionPlayableStrokeColor());
-        strokeWeight(3);
+        renderTarget.stroke(pionPlayableStrokeColor());
+        renderTarget.strokeWeight(3);
       } else {
         resetStroke();
       }
 
       switch(cases.get(i).getState()) {
       case White :
-        fill(whitePionColor());
-        ellipse(cases.get(i).getX(), cases.get(i).getY(), PION_SIZE, PION_SIZE);
+        renderTarget.fill(whitePionColor());
+        renderTarget.ellipse(cases.get(i).getX(), cases.get(i).getY(), PION_SIZE, PION_SIZE);
         break;
       case Black :
-        fill(blackPionColor());
-        ellipse(cases.get(i).getX(), cases.get(i).getY(), PION_SIZE, PION_SIZE);
+        renderTarget.fill(blackPionColor());
+        renderTarget.ellipse(cases.get(i).getX(), cases.get(i).getY(), PION_SIZE, PION_SIZE);
         break;
       case Empty :
-        fill(emptyPionColor());
-        ellipse(cases.get(i).getX(), cases.get(i).getY(), NO_PION_SIZE, NO_PION_SIZE);
+        renderTarget.fill(emptyPionColor());
+        renderTarget.ellipse(cases.get(i).getX(), cases.get(i).getY(), NO_PION_SIZE, NO_PION_SIZE);
         break;
       }
     }
 
     // hud
-    
-    textAlign(LEFT, CENTER);
-    textSize(30);
-    fill(fontColor());
-    text("Turn" + ((aiTurn())? " (AI)": ""), width * 0.53, height * 0.95);
 
-    if (currentPlayer == EStates.White) fill(whitePionColor());
-    else                                fill(blackPionColor());
-    ellipse(width * 0.48, height * 0.95, PION_SIZE, PION_SIZE);
-    
-    stroke(strokeColor());
-    fill(buttonHoverColor());
+    renderTarget.textAlign(LEFT, CENTER);
+    renderTarget.textSize(30);
+    renderTarget.fill(fontColor());
+    renderTarget.text("Turn" + ((aiTurn())? " (AI)": ""), width * 0.53, height * 0.95);
+
+    if (currentPlayer == EStates.White) renderTarget.fill(whitePionColor());
+    else                                renderTarget.fill(blackPionColor());
+    renderTarget.ellipse(width * 0.48, height * 0.95, PION_SIZE, PION_SIZE);
+
+    renderTarget.stroke(strokeColor());
+    renderTarget.fill(buttonHoverColor());
 
     if (homeButtonHover) {
-      rect(width * 0.15f, height * 0.07f, width * 0.2f, height * 0.06f);
+      renderTarget.rect(width * 0.15f, height * 0.07f, width * 0.2f, height * 0.06f);
     }
+
+    renderTarget.textSize(15);
+
+    renderTarget.textAlign(CENTER, CENTER);
+    renderTarget.fill(fontColor());
+    renderTarget.text("Return to menu", width * 0.15f, height * 0.07f);
     
-    textSize(15);
-    
-    textAlign(CENTER, CENTER);
-    fill(fontColor());
-    text("Return to menu", width * 0.15f, height * 0.07f);
+    renderTarget.endDraw();
+    image(renderTarget, 0, 0);
   }
 
   public void mousePressed() {
-    if (homeButtonHover){
+    if (homeButtonHover) {
       sm.changeScene(new SceneMainMenu(sm));
     }
-    
+
     if (aiTurn()) return;
 
     if (selectedPion != -1) {
@@ -156,7 +165,7 @@ public class SceneGame extends Scene {
 
   public void mouseMoved() {
     homeButtonHover = mouseOnEmp(0.15f, 0.07f, 0.2f, 0.06f);
-    
+
     if (aiTurn()) return;
     hoverPion = -1;
     int i = 0;
@@ -180,8 +189,8 @@ public class SceneGame extends Scene {
   }
 
   void resetStroke() {
-    stroke(strokeColor());
-    strokeWeight(1);
+    renderTarget.stroke(strokeColor());
+    renderTarget.strokeWeight(1);
   }
 
   private boolean mouseHover(int pionIndex) {
@@ -193,7 +202,7 @@ public class SceneGame extends Scene {
 
   private void selectPion(int pionIndex) {
     selectedPion = pionIndex;
-    casesPlayable = casesPlayable(board, cases, selectedPion, currentPlayer);
+    casesPlayable = casesPlayable(board, cases, selectedPion);
   }
 
   private void nextTurn() {
@@ -210,10 +219,26 @@ public class SceneGame extends Scene {
     } else {
       currentPlayer =  EStates.White;
     }
+
+    if (!moveAvailable()) {
+      draw();
+      sm.changeScene(new SceneGameResult(sm, currentPlayer == EStates.Black, player2IsAi, renderTarget.get()));
+    }
   }
 
   private void currentPionGoTo(int pionTo) {
     cases.get(selectedPion).setState(EStates.Empty);
     cases.get(pionTo).setState(currentPlayer);
+  }
+
+  private boolean moveAvailable() {
+    if (cases.size() <= 1) return false;
+
+    ArrayList<Integer> indexCasesOfWhitePlayer = listCasesOf(cases, EStates.White);
+    for (int i = 0; i < indexCasesOfWhitePlayer.size(); ++i) {
+      if (casesPlayable(board, cases, indexCasesOfWhitePlayer.get(i)).size() > 0) return true;
+    }
+
+    return false;
   }
 }
