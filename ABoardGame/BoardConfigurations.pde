@@ -2,6 +2,13 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
+public enum EBoards {
+ Squared, Moulin , MoulinModified,  
+}
+
+public EBoards[] BOARDS = new EBoards[]{ EBoards.Squared, EBoards.Moulin, EBoards.MoulinModified};
+
+
 public int sizeX() {
  return width - (MARGIN_RIGHT + MARGIN_LEFT);
 }
@@ -11,7 +18,30 @@ public int sizeY(){
 }
 
 
-public ArrayList<Integer>[] getBoardConfiguration1(int squareSize) {
+public ArrayList<Integer>[] getBoardConfiguration(EBoards board, int info){
+  switch(board){
+    case Squared:
+      return getBoardConfiguration1(info);
+    case Moulin:
+      return getBoardConfiguration2(info);
+    case MoulinModified:
+      return getBoardConfiguration3(info);
+  }
+  return null;
+}
+
+public ArrayList<Case> getCases(EBoards board, int info){
+  switch(board){
+    case Squared:
+      return getCases1(info);
+    case Moulin :
+    case MoulinModified:
+      return getCases2(info);
+  }
+  return null;
+}
+
+private ArrayList<Integer>[] getBoardConfiguration1(int squareSize) {
 
   ArrayList<Integer>[] board = new ArrayList[squareSize * 2 ];
 
@@ -27,7 +57,7 @@ public ArrayList<Integer>[] getBoardConfiguration1(int squareSize) {
   return board;
 }
 
-public ArrayList<Case> getCases1(int squareSize) {
+private ArrayList<Case> getCases1(int squareSize) {
   ArrayList<Case> cases = new ArrayList(squareSize * squareSize);
 
   int sizeX = sizeX();
@@ -44,7 +74,7 @@ public ArrayList<Case> getCases1(int squareSize) {
   return cases;
 }
 
-public ArrayList<Integer>[] getBoardConfiguration2(int squareSize) {
+private ArrayList<Integer>[] getBoardConfiguration2(int squareSize) {
 
   ArrayList<Integer>[] board = new ArrayList[squareSize * 4 + ((squareSize >=2)? 4 : 0)];
 
@@ -69,8 +99,35 @@ public ArrayList<Integer>[] getBoardConfiguration2(int squareSize) {
   return board;
 }
 
+private ArrayList<Integer>[] getBoardConfiguration3(int squareSize) {
 
-public ArrayList<Case> getCases2(int squareSize) {
+  ArrayList<Integer>[] board = new ArrayList[squareSize * 4 + ((squareSize >=2)? 8 : 0)];
+
+  for (int i = 0; i < squareSize; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      board[i * 4 + j] = new ArrayList();
+      for (int x = 0; x < 3; ++x) {
+        board[i * 4 + j].add(i * 8 + ((j * 2 + x) - ((j == 3 && x == 2)? (j * 2 + x) : 0)));
+      }
+    }
+  }
+
+  if (squareSize >= 2) {
+    for (int j = 0; j < 4; ++j) {
+      board[board.length - 8 + j * 2] = new ArrayList();
+      board[board.length - 8 + j * 2 + 1] = new ArrayList();
+      for (int floor = 0; floor < squareSize; ++floor) {
+        board[board.length - 8 + j * 2].add(8 * floor + 2 * j);
+        board[board.length - 8 + j * 2 + 1].add(1 + 8 * floor + 2 * j);
+      }
+    }
+  }
+
+  return board;
+}
+
+
+private ArrayList<Case> getCases2(int squareSize) {
   ArrayList<Case> cases = new ArrayList(8 * squareSize);
 
 

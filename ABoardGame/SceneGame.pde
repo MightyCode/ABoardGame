@@ -21,24 +21,25 @@ public class SceneGame extends Scene {
   private Pair<Integer, Integer> aiDecision;
 
   private boolean homeButtonHover;
-  
+
   private PGraphics renderTarget;
-  
+
   public SceneGame(SceneManager sm) {
     super(sm);
 
     homeButtonHover = false;
 
-    int floor = 2;
-    board = getBoardConfiguration2(floor);
-    cases = getCases2(floor);
+    int floor = 5;
+    EBoards boardConfiguration = EBoards.MoulinModified;
+    
+    board = getBoardConfiguration(boardConfiguration, floor);
+    cases = getCases(boardConfiguration, floor);
     assignPions(cases, POURCENT_PIONS);
 
     currentPlayer = EStates.White;
-    
+
     renderTarget = createGraphics(width, height);
-    renderTarget.rectMode(CENTER);
-    
+
     if (player2IsAi) ai.InitBoard(board, cases);
   }
 
@@ -60,10 +61,18 @@ public class SceneGame extends Scene {
   }
 
   public void draw() {
-    // Draw
     renderTarget.beginDraw();
-    renderTarget.background(backgroundColor());
 
+    drawGame();
+    drawHud();
+
+    renderTarget.endDraw();
+    image(renderTarget, 0, 0);
+  }
+
+
+  public void drawGame() {
+    renderTarget.background(backgroundColor());
     resetStroke();
 
     // lines
@@ -107,9 +116,9 @@ public class SceneGame extends Scene {
         break;
       }
     }
+  }
 
-    // hud
-
+  public void drawHud() {
     renderTarget.textAlign(LEFT, CENTER);
     renderTarget.textSize(30);
     renderTarget.fill(fontColor());
@@ -123,6 +132,7 @@ public class SceneGame extends Scene {
     renderTarget.fill(buttonHoverColor());
 
     if (homeButtonHover) {
+      renderTarget.rectMode(CENTER);
       renderTarget.rect(width * 0.15f, height * 0.07f, width * 0.2f, height * 0.06f);
     }
 
@@ -131,9 +141,6 @@ public class SceneGame extends Scene {
     renderTarget.textAlign(CENTER, CENTER);
     renderTarget.fill(fontColor());
     renderTarget.text("Return to menu", width * 0.15f, height * 0.07f);
-    
-    renderTarget.endDraw();
-    image(renderTarget, 0, 0);
   }
 
   public void mousePressed() {
@@ -221,7 +228,9 @@ public class SceneGame extends Scene {
     }
 
     if (!moveAvailable()) {
-      draw();
+      renderTarget.beginDraw();
+      drawGame();
+      renderTarget.endDraw();
       sm.changeScene(new SceneGameResult(sm, currentPlayer == EStates.Black, player2IsAi, renderTarget.get()));
     }
   }

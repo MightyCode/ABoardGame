@@ -52,7 +52,7 @@ public class SceneMainMenu extends Scene {
     if (playButtonHover){
       sm.changeScene(new SceneGame(sm));
     } else if (settingsButtonHover){
-      //sm.changeScene(new SceneGameSettings(sm));
+      sm.changeScene(new SceneGameSettings(sm));
     } else if (quitButtonHover){
       sm.changeScene(new SceneExit(sm));
     }
