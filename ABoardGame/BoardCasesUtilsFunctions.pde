@@ -69,3 +69,19 @@ public void printBoard(ArrayList<Integer>[] board){
      println("");
   }
 }
+
+public boolean workBoardEquals(ArrayList<Integer>[] board1, ArrayList<Integer>[] board2){
+ for (int i = 0; i < board1.length; ++i) {
+    for (int j = 0; j < board2[i].size(); ++j) {
+      if (board1[i].get(j) != board2[i].get(j)) return false;
+    }
+  }
+  return true;
+}
+
+public boolean casesEquals(ArrayList<Case> cases1, ArrayList<Case> cases2){
+ for (int i = 0; i < cases1.size(); ++i) {
+    if (cases1.get(i).getState() != cases2.get(i).getState()) return false;
+  }
+  return true;
+}

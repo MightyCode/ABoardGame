@@ -3,11 +3,14 @@ public class AI {
   private ArrayList<Case> cases;
   private int floors; // or difficulty of the AI
   private EStates player;
+  private StateGame state = null;
+  private int floorSearched;
 
   public AI(int floorPrediction, EStates player) {
     workBoard = null;
     cases = new ArrayList();
     floors = floorPrediction;
+    floorSearched = 0;
     this.player = player;
   }
 
@@ -17,42 +20,78 @@ public class AI {
   }
 
   public void MakeDecision(Pair<Integer, Integer> decision) {
+    privateMakeDecision(decision);
+    --floorSearched;
+    if (floorSearched <= 0) floorSearched = 0;
+  }
+
+
+  private void privateMakeDecision(Pair<Integer, Integer> decision) {
     cases.get(decision.value).setState(cases.get(decision.key).getState());
     cases.get(decision.key).setState(EStates.Empty);
   }
 
-  public void UnMakeDecision(Pair<Integer, Integer> decision) {
+  private void UnMakeDecision(Pair<Integer, Integer> decision) {
     cases.get(decision.key).setState(cases.get(decision.value).getState());
     cases.get(decision.value).setState(opponent(cases.get(decision.value).getState()));
   }
 
   public Pair<Integer, Integer> decision() {
-    Pair<Integer, Integer> best = new Pair(), current = new Pair(0, 0);
-    ArrayList<Integer> ourCases, casesPlayable;
-    int bestCost = 0, cost;
+    state = null;
+    if (state == null) {
+      state = new StateGame(player, player, null, null);
+    } else {
+      
+    }
+    
+    constructStateTree(state, player);
+    Pair<Integer, Integer> decision = state.bestDecision();
+    //println(decision + " " + state.subStateGame.size());
+    return decision;
+  }
 
-    ourCases = listCasesOf(cases, player);
+  /*public void continuBeganTree(){
+    
+  }*/
+
+
+  public void constructStateTree(StateGame parentNode, EStates currentPlayer) {
+    ArrayList<Integer> ourCases, casesPlayable;
+    boolean playOnce = false;
+    int cost;
+    ourCases = listCasesOf(cases, currentPlayer);
+    
     for (int i = 0; i < ourCases.size(); ++i) {
       casesPlayable = casesPlayable(workBoard, cases, ourCases.get(i));
-      
+      playOnce = playOnce || (casesPlayable.size() > 0);
+
       for (int j = 0; j < casesPlayable.size(); ++j) {
-        current = new Pair(ourCases.get(i), casesPlayable.get(j));
-        MakeDecision(current);
-        cost = boardValue(workBoard, cases, player);
+        Pair<Integer, Integer> current = new Pair(ourCases.get(i), casesPlayable.get(j));
+        privateMakeDecision(current);
+        ++floorSearched;
+        
+        if (floorSearched >= floors) {       
+          cost = boardValue(workBoard, cases, player);
+          StateGame childNode = new StateGame(player, currentPlayer, new BoardCost(cost, currentPlayer, false), current);
+          parentNode.addSubStateGame(childNode);
+        } else {
+                  
+          StateGame childNode = new StateGame(player, currentPlayer, null, current);
+          parentNode.addSubStateGame(childNode);
+          constructStateTree(childNode, opponent(currentPlayer));
+        }
+        
 
         UnMakeDecision(current);
-        
-        if (best.key == null || cost > bestCost){
-          best.key = ourCases.get(i);
-          best.value = casesPlayable.get(j);
-          bestCost = cost;
-        }
+        --floorSearched;
       }
     }
 
-    if (best.key == null) return null;
-    else return best;
+    if (!playOnce){
+      parentNode.addSubStateGame(new StateGame(player, currentPlayer, new BoardCost(0, currentPlayer, true), null));  
+    }
   }
+
 
   private int boardValue(ArrayList<Integer>[] board, ArrayList<Case> cases, EStates currentPlayer) {
     // disponibilities

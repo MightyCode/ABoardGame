@@ -42,5 +42,5 @@ public color buttonHoverColor(){
 }
 
 public color buttonSelectedColor(){
-  return (darkMode) ? color(50): color(225);
+  return (darkMode) ? color(30): color(240);
 }

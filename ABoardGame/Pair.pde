@@ -14,6 +14,11 @@ public class Pair<K, V> {
   }
   
   @Override
+  public String toString(){
+    return "{k : " + key.toString() + ", v : " + value.toString() + "}";
+  }
+  
+  @Override
   public boolean equals(Object object){
     if (object == this) return true;
     

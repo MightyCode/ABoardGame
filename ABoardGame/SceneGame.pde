@@ -1,8 +1,11 @@
 static int MARGIN_LEFT = 100, MARGIN_RIGHT = 100, MARGIN_DOWN = 100, MARGIN_UP = 130;
 static int POURCENT_PIONS = 60;
 static int AI_CHOOSE_TIME = 1500; // in millis;
-static int PION_SIZE= 40;
+static int PION_SIZE = 40;
 static int NO_PION_SIZE = 5; 
+
+public boolean player2IsAi = true;
+EBoards boardConfiguration = EBoards.Squared;
 
 public class SceneGame extends Scene {
 
@@ -15,8 +18,8 @@ public class SceneGame extends Scene {
   private EStates currentPlayer;
 
   // IA vairable
-  private boolean player2IsAi = true;
-  private AI ai = new AI(3, EStates.Black);
+
+  private AI ai = new AI(4, EStates.Black);
   private int timeAiChoose;
   private Pair<Integer, Integer> aiDecision;
 
@@ -29,8 +32,8 @@ public class SceneGame extends Scene {
 
     homeButtonHover = false;
 
-    int floor = 5;
-    EBoards boardConfiguration = EBoards.MoulinModified;
+    int floor = 7;
+
     
     board = getBoardConfiguration(boardConfiguration, floor);
     cases = getCases(boardConfiguration, floor);
