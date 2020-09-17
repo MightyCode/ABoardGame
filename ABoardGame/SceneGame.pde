@@ -19,7 +19,7 @@ public class SceneGame extends Scene {
 
   // IA vairable
 
-  private AI ai = new AI(4, EStates.Black);
+  private AI ai = new AI(3, EStates.Black);
   private int timeAiChoose;
   private Pair<Integer, Integer> aiDecision;
 

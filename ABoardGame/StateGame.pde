@@ -53,11 +53,11 @@ public class StateGame {
 
     for (int i = 1; i < subStateGame.size(); ++i) {
       current = subStateGame.get(i).getBestState();
-      //println(i + " " + best + " " + current);
       difference = best.compare(current, playerComputed);
+       println(playerOfTurn + " " + difference + " " + best + " " + current + " " + ((playerComputed == playerOfTurn) ? "max":"min"));
       if ((playerComputed == playerOfTurn && difference == 1) || (playerComputed != playerOfTurn && difference == -1))  best = current;
     }
-
+    println("return");
     return best;
   }
 
