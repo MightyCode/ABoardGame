@@ -5,7 +5,7 @@ static int PION_SIZE = 40;
 static int NO_PION_SIZE = 5; 
 
 public boolean player2IsAi = true;
-EBoards boardConfiguration = EBoards.Squared;
+EBoards boardConfiguration = EBoards.MoulinModified;
 
 public class SceneGame extends Scene {
 
@@ -32,8 +32,7 @@ public class SceneGame extends Scene {
 
     homeButtonHover = false;
 
-    int floor = 7;
-
+    int floor = 4;
     
     board = getBoardConfiguration(boardConfiguration, floor);
     cases = getCases(boardConfiguration, floor);
