@@ -85,3 +85,11 @@ public boolean casesEquals(ArrayList<Case> cases1, ArrayList<Case> cases2){
   }
   return true;
 }
+
+
+public int CasesHashCode(ArrayList<Case>cases){
+    int hashCode = 1;
+    for (Case e : cases)
+        hashCode = 31*hashCode + (e==null ? 0 : e.hashCode());
+    return hashCode; 
+}

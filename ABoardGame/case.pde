@@ -34,4 +34,17 @@ public class Case {
     aCase.setState(state);
     return aCase;
   }
+  
+  public int hashCode(){
+    switch(state){
+      case White:
+        return 0;
+      case Black:
+        return 1;
+      case Empty:
+        return 2;
+       default:
+        return 2;
+    }
+  }
 }
