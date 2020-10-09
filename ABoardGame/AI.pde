@@ -2,9 +2,11 @@ public class AI {
   private ArrayList<Integer>[] workBoard;
   private ArrayList<Case> cases;
   private int floors; // or difficulty of the AI
+  private int floorSearched;
   private EStates player;
   private StateGame state = null;
-  private int floorSearched;
+
+  private ArrayList<StateGame>[] floorOfStates;
 
   public AI(int floorPrediction, EStates player) {
     workBoard = null;
@@ -37,12 +39,8 @@ public class AI {
   }
 
   public Pair<Integer, Integer> decision() {
-    state = null;
-    if (state == null) {
-      state = new StateGame(player, player, null, null);
-    } else {
-      
-    }
+    floorOfStates = new ArrayList[floors];
+    state = new StateGame(player, player, null, null);
     
     constructStateTree(state, player);
     Pair<Integer, Integer> decision = state.bestDecision();
