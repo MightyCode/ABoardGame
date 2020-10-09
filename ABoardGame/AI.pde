@@ -6,7 +6,7 @@ public class AI {
   private EStates player;
   private StateGame state = null;
 
-  private ArrayList<StateGame>[] floorOfStates;
+  private ArrayList<Pair<Integer, StateGame>>[] floorOfStates;
 
   public AI(int floorPrediction, EStates player) {
     workBoard = null;
@@ -39,10 +39,16 @@ public class AI {
   }
 
   public Pair<Integer, Integer> decision() {
+    // Store stateGame and it hashcode
     floorOfStates = new ArrayList[floors];
+    for (int i = 0; i < floors; ++i){
+      floorOfStates[i] = new ArrayList();
+    }
+    
     state = new StateGame(player, player, null, null);
     
     constructStateTree(state, player);
+    
     Pair<Integer, Integer> decision = state.bestDecision();
     //println(decision + " " + state.subStateGame.size());
     return decision;
@@ -52,6 +58,7 @@ public class AI {
     ArrayList<Integer> ourCases, casesPlayable;
     boolean playOnce = false;
     int cost;
+    StateGame stateTested, childNode;
     ourCases = listCasesOf(cases, currentPlayer);
     
     for (int i = 0; i < ourCases.size(); ++i) {
@@ -62,18 +69,25 @@ public class AI {
         Pair<Integer, Integer> current = new Pair(ourCases.get(i), casesPlayable.get(j));
         privateMakeDecision(current);
         ++floorSearched;
+                        
+        stateTested = findExistingSameStateGame();
         
-        if (floorSearched >= floors) {       
-          cost = boardValue(workBoard, cases, player);
-          StateGame childNode = new StateGame(player, currentPlayer, new BoardCost(cost, currentPlayer, false), current);
-          parentNode.addSubStateGame(childNode);
+        if (stateTested == null){
+          if (floorSearched >= floors) {       
+            cost = boardValue(workBoard, cases, player);
+            childNode = new StateGame(player, currentPlayer, new BoardCost(cost, currentPlayer, false), current);
+            parentNode.addSubStateGame(childNode);
+          } else {  
+            childNode = new StateGame(player, currentPlayer, null, current);
+            parentNode.addSubStateGame(childNode);
+            constructStateTree(childNode, opponent(currentPlayer));
+          }
+          
+          floorOfStates[floorSearched-1].add(new Pair(casesHashCode(cases), childNode));
         } else {
-                  
-          StateGame childNode = new StateGame(player, currentPlayer, null, current);
-          parentNode.addSubStateGame(childNode);
-          constructStateTree(childNode, opponent(currentPlayer));
+          parentNode.addSubStateGame(stateTested);
         }
-        
+          
 
         UnMakeDecision(current);
         --floorSearched;
@@ -96,7 +110,20 @@ public class AI {
 
     return playerScore - opponentScore;
   }
-
+  
+  private StateGame findExistingSameStateGame(){
+    int hashCode = casesHashCode(cases);
+    Pair<Integer, StateGame> current;
+    for (int i = 0; i < floorOfStates[floorSearched-1].size(); ++i){
+      current = floorOfStates[floorSearched-1].get(i);
+      if (current.key == hashCode){
+        return current.value;  
+      }
+    }
+    
+    return null;
+  }
+  
   private int computeChainScore(ArrayList<Integer>[] board, ArrayList<Case> cases, EStates player) {
     int score = 0, temp = 0;
 

@@ -39,7 +39,6 @@ public class StateGame {
       }
     }
 
-
     return listOfBest.get((int)random(listOfBest.size())).getDecisionMade();
   }
 
@@ -49,21 +48,21 @@ public class StateGame {
     } 
 
     int difference;
-    best = subStateGame.get(0).getBestState();
+    boardCost = subStateGame.get(0).getBestState();
     BoardCost current;
 
     for (int i = 1; i < subStateGame.size(); ++i) {
       current = subStateGame.get(i).getBestState();
       difference = boardCost.compare(current, playerComputed);
 
-      //println(playerOfTurn + " " + difference + " " + best + " " + current + " " + ((playerComputed == playerOfTurn) ? "max":"min"));
+      //println(playerOfTurn + " " + difference + " " + boardCost + " " + current + " " + ((playerComputed == playerOfTurn) ? "max":"min"));
       
       if ((playerComputed == playerOfTurn && difference == -1) 
-	|| (playerComputed != playerOfTurn && difference == 1))  boardCost = current;
+	      || (playerComputed != playerOfTurn && difference == 1))  boardCost = current;
     }
     //println("return");
     
-    return best;
+    return boardCost;
   }
 
 
