@@ -50,6 +50,7 @@ public class AI {
     constructStateTree(state, player);
     
     Pair<Integer, Integer> decision = state.bestDecision();
+
     //println(decision + " " + state.subStateGame.size());
     return decision;
   }

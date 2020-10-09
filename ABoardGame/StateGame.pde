@@ -38,8 +38,11 @@ public class StateGame {
         best = current;
       }
     }
-
-    return listOfBest.get((int)random(listOfBest.size())).getDecisionMade();
+    
+    
+    StateGame choosen = listOfBest.get((int)random(listOfBest.size()));
+    println("Best decision has a cost of " + choosen.boardCost.cost + " and is winner " + choosen.boardCost.endGame + " for " + choosen.boardCost.player);
+    return choosen.getDecisionMade();
   }
 
   public BoardCost getBestState() {
