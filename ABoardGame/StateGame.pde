@@ -44,20 +44,25 @@ public class StateGame {
   }
 
   public BoardCost getBestState() {
-    if (subStateGame.size() <= 0) {
+    if (subStateGame.size() <= 0 || boardCost != null) {
       return boardCost;
-    }
+    } 
 
     int difference;
-    BoardCost best = subStateGame.get(0).getBestState(), current;
+    best = subStateGame.get(0).getBestState();
+    BoardCost current;
 
     for (int i = 1; i < subStateGame.size(); ++i) {
       current = subStateGame.get(i).getBestState();
-      difference = best.compare(current, playerComputed);
+      difference = boardCost.compare(current, playerComputed);
+
       //println(playerOfTurn + " " + difference + " " + best + " " + current + " " + ((playerComputed == playerOfTurn) ? "max":"min"));
-      if ((playerComputed == playerOfTurn && difference == -1) || (playerComputed != playerOfTurn && difference == 1))  best = current;
+      
+      if ((playerComputed == playerOfTurn && difference == -1) 
+	|| (playerComputed != playerOfTurn && difference == 1))  boardCost = current;
     }
     //println("return");
+    
     return best;
   }
 

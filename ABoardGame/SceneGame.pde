@@ -19,7 +19,7 @@ public class SceneGame extends Scene {
 
   // IA vairable
 
-  private AI ai = new AI(3, EStates.Black);
+  private AI ai = new AI(5, EStates.Black);
   private int timeAiChoose;
   private Pair<Integer, Integer> aiDecision;
 
@@ -32,7 +32,7 @@ public class SceneGame extends Scene {
 
     homeButtonHover = false;
 
-    int floor = 4;
+    int floor = 6;
     
     board = getBoardConfiguration(boardConfiguration, floor);
     cases = getCases(boardConfiguration, floor);

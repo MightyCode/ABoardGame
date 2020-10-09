@@ -50,11 +50,6 @@ public class AI {
     return decision;
   }
 
-  /*public void continuBeganTree(){
-    
-  }*/
-
-
   public void constructStateTree(StateGame parentNode, EStates currentPlayer) {
     ArrayList<Integer> ourCases, casesPlayable;
     boolean playOnce = false;
